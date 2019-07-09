@@ -5,6 +5,7 @@ services:
 before_install:
     - docker build -t zainalits/react-test -f ./client/Dockerfile.dev ./client
     
+    
 script:
     - docker run -e CI=true zainalits/react-test npm test
     
@@ -13,3 +14,11 @@ after_success:
     - docker build -t zainalits/multi-nginx ./nginx
     - docker build -t zainalits/multi-server ./server
     - docker build -t zainalits/multi-worker ./worker
+    # Log in to the docker CLI
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push zainalits/multi-client
+    - docker push zainalits/multi-nginx
+    - docker push zainalits/multi-server
+    - docker push zainalits/multi-worker 
+    # take those images and push to docker hub
+    
